@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truy Xuất Nguồn Gốc Sản Phẩm</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <i class="fas fa-microchip logo-icon"></i>
+            <h1>Hệ Thống Truy Xuất Nguồn Gốc</h1>
+            <p>Nhập mã số lô (Lot No.) để kiểm tra thông tin sản xuất</p>
+        </header>
+
+        <div class="search-box">
+            <input type="text" id="lotInput" placeholder="Ví dụ: C010225...">
+            <button onclick="traceProduct()"><i class="fas fa-search"></i> Kiểm tra</button>
+        </div>
+
+        <div id="loader" class="loader" style="display: none;"></div>
+
+        <div id="resultArea" class="result-area" style="display: none;">
+            <section class="card info-card">
+                <h3><i class="fas fa-info-circle"></i> Thông Tin Thành Phẩm</h3>
+                <div id="productInfo" class="grid-info"></div>
+            </section>
+
+            <section class="card detail-card">
+                <h3><i class="fas fa-blender"></i> Chi Tiết Nguyên Liệu & Sản Xuất</h3>
+                <div class="table-responsive">
+                    <table id="ingredientTable">
+                        <thead>
+                            <tr>
+                                <th>Nguyên liệu</th>
+                                <th>Số Lượng</th>
+                                <th>Thông số Máy</th>
+                                <th>Bắt đầu</th>
+                                <th>Kết thúc</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ingredientBody"></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <div id="errorMsg" class="error-msg"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
