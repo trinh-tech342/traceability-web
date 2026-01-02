@@ -1,5 +1,5 @@
 // Dán link Web App bạn vừa Copy ở bước trên vào đây
-const API_URL = 'https://script.google.com/macros/s/AKfycbwmWI5IjcbFSGeRrUrCuKswbuZqAyVEIS8war7n1qrtHUEK2DSfmHX9Np6qz8V-_YBq/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbzPpFrQX4rmGc4G8x1ea1rduBQ884tYDzy7KOHQ-J7g3V9VvsUPUnb2kc9prFDpHq1s/exec';
 
 async function traceProduct() {
     const lotNo = document.getElementById('lotInput').value.trim();
@@ -49,6 +49,7 @@ async function traceProduct() {
                 tableHtml += `
                     <tr>
                         <td>${item.recipe || 'N/A'}</td>
+                        <td>${item.Ingridient || 'N/A'}</td>
                         <td>${item.quantity || '0'}</td>
                         <td>${item.machine_value || '-'}</td>
                         <td>${item.time_start || ''} ${item.date_start || ''}</td>
