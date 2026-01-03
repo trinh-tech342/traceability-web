@@ -1,13 +1,35 @@
-function formatDateTime(isoString) {
-    if (!isoString) return '-';
-    const date = new Date(isoString);
-    if (isNaN(date.getTime())) return isoString;
+function formatSmartDateTime(dateVal, timeVal) {
+    const d = dateVal ? new Date(dateVal) : null;
+    const t = timeVal ? new Date(timeVal) : null;
 
-    const hh_mm = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
-    const dd_mm_yyyy = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+    let datePart = "";
+    let timePart = "";
 
-    // Nếu là năm 1899 thì chỉ hiện Giờ, ngược lại hiện cả hai
-    return date.getFullYear() === 1899 ? hh_mm : `${hh_mm} ${dd_mm_yyyy}`;
+    // Xử lý phần Ngày (Nếu không phải năm 1899 thì mới lấy ngày)
+    if (d && !isNaN(d.getTime()) && d.getFullYear() !== 1899) {
+        datePart = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+    }
+
+    // Xử lý phần Giờ (Ưu tiên lấy từ timeVal, nếu không có thì lấy từ dateVal)
+    const targetTime = (t && !isNaN(t.getTime())) ? t : d;
+    if (targetTime && !isNaN(targetTime.getTime())) {
+        timePart = `${String(targetTime.getHours()).padStart(2, '0')}:${String(targetTime.getMinutes()).padStart(2, '0')}`;
+    }
+
+    // Gộp lại: Nếu có cả hai thì cách nhau khoảng trắng, nếu chỉ có một thì hiện một
+    return [timePart, datePart].filter(Boolean).join(" ") || "-";
+}
+// Hàm định dạng cho tất cả các ô ngày tháng
+function formatDateOnly(isoString) {
+    if (!isoString || isoString === 'N/A') return 'N/A';
+    const d = new Date(isoString);
+    if (isNaN(d.getTime())) return isoString;
+    
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    
+    return `${day}/${month}/${year}`;
 }
 // Dán link Web App bạn vừa Copy ở bước trên vào đây
 const API_URL = 'https://script.google.com/macros/s/AKfycbzPpFrQX4rmGc4G8x1ea1rduBQ884tYDzy7KOHQ-J7g3V9VvsUPUnb2kc9prFDpHq1s/exec';
@@ -45,7 +67,7 @@ async function traceProduct() {
         document.getElementById('productInfo').innerHTML = `
             <div class="info-item"><b>Mã Lô</b> ${product.lot_no || 'N/A'}</div>
             <div class="info-item"><b>Số lượng</b> ${product.quantity || '0'}</div>
-            <div class="info-item"><b>Hạn sử dụng</b> ${product.HSD || 'N/A'}</div>
+            <div class="info-item"><b>Hạn sử dụng</b> ${formatDateOnly(product.HSD)}</div>
             <div class="info-item"><b>Khách hàng</b> ${product.customer || 'N/A'}</div>
         `;
 
@@ -58,13 +80,13 @@ async function traceProduct() {
             let tableHtml = '';
             ingredients.forEach(item => {
                 tableHtml += `
-                       <tr>
-                         <td>${item.recipe || 'N/A'}</td>
-                         <td>${item.Ingridient || 'N/A'}</td>
-                         <td>${item.quantity || '0'}</td>
-                         <td>${item.machine_value || '-'}</td>
-                <td>${formatDateTime(item.time_start)} ${formatDateTime(item.date_start)}</td>
-               <td>${formatDateTime(item.time_finish)} ${formatDateTime(item.date_finish)}</td>
+    <tr>
+        <td>${item.recipe || 'N/A'}</td>
+        <td>${item.Ingridient || 'N/A'}</td>
+        <td>${item.quantity || '0'}</td>
+        <td>${item.machine_value || '-'}</td>
+        <td>${formatSmartDateTime(item.date_start, item.time_start)}</td>
+        <td>${formatSmartDateTime(item.date_finish, item.time_finish)}</td>
     </tr>
 `;
             });
