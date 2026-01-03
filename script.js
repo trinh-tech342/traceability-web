@@ -1,3 +1,14 @@
+function formatDateTime(isoString) {
+    if (!isoString) return '-';
+    const date = new Date(isoString);
+    if (isNaN(date.getTime())) return isoString;
+
+    const hh_mm = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+    const dd_mm_yyyy = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+
+    // Nếu là năm 1899 thì chỉ hiện Giờ, ngược lại hiện cả hai
+    return date.getFullYear() === 1899 ? hh_mm : `${hh_mm} ${dd_mm_yyyy}`;
+}
 // Dán link Web App bạn vừa Copy ở bước trên vào đây
 const API_URL = 'https://script.google.com/macros/s/AKfycbzPpFrQX4rmGc4G8x1ea1rduBQ884tYDzy7KOHQ-J7g3V9VvsUPUnb2kc9prFDpHq1s/exec';
 
@@ -47,15 +58,15 @@ async function traceProduct() {
             let tableHtml = '';
             ingredients.forEach(item => {
                 tableHtml += `
-                    <tr>
-                        <td>${item.recipe || 'N/A'}</td>
-                        <td>${item.Ingridient || 'N/A'}</td>
-                        <td>${item.quantity || '0'}</td>
-                        <td>${item.machine_value || '-'}</td>
-                        <td>${item.time_start || ''} ${item.date_start || ''}</td>
-                        <td>${item.time_finish || ''} ${item.date_finish || ''}</td>
-                    </tr>
-                `;
+                       <tr>
+                         <td>${item.recipe || 'N/A'}</td>
+                         <td>${item.Ingridient || 'N/A'}</td>
+                         <td>${item.quantity || '0'}</td>
+                         <td>${item.machine_value || '-'}</td>
+                <td>${formatDateTime(item.time_start)} ${formatDateTime(item.date_start)}</td>
+               <td>${formatDateTime(item.time_finish)} ${formatDateTime(item.date_finish)}</td>
+    </tr>
+`;
             });
             document.getElementById('ingredientBody').innerHTML = tableHtml;
         }
